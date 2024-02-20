@@ -1,26 +1,37 @@
-const getRandomNUmber = (min, max) => {
+const getRandomNumber = (min = 1, max = 100) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const promptForNumber = () => {
-    const input = prompt("Please enter a number:");
-    const number = parseFloat(input);
+const promptForNumber = (message = "Zadej nahodné celé čislo z intervalu 1 až 100", min = 1, max = 100) => {
+    const input = prompt(message);
+    if (input === null) {
+        return null
+    } // handle cancel button
 
-    if (isNaN(number)) {
-        return promptForNumber(); // Recursively call promptForNumber until a valid number is entered
-    } else {
-        return number;
+    const number = parseInt(input);
+    if (isNaN(number) || number < min || number > max) {
+        return promptForNumber(number);
     }
+    return number;
 }
 
-// Example usage
-const userNumber = promptForNumber();
-console.log("You entered:", userNumber);
-
-
-const initialize = () => {
-    const response = prompt("Vyber nahodne cislo");
-    if (response === null) {
-        return;
+const guessing = (lastChance = false, randomNumber) => {
+    const guessNumber = promptForNumber(lastChance ? "Nevadí máš ještě jeden pokus." : "Zadej nahodné celé čislo z intervalu 1 až 100");
+    if (guessNumber === null) return;
+    if (guessNumber === randomNumber) {
+        return alert("Trefil jsi číslo, dneska si jdi vsadit do Tipsportu.")
     }
+    if (!lastChance) {
+        return guessing(true, randomNumber);
+    }
+    return alert(`Bohužel, správné číslo bylo ${randomNumber}`);
+
+}
+
+const init = () => {
+    const randomNumber = getRandomNumber(1, 100);
+    console.log(randomNumber); //comment in for testing
+    guessing(false, randomNumber)
 };
+
+init();
