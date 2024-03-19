@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= todo.title%></title>
+</head>
+<body>
+    <a href="/">Zpet</a>
+    <h1><%= todo.title%></h1>
+    <p>Stav <%= todo.done ? "Hotovo" : "Nehotovo" %></p>
+    <form action="/remove-todo/<%= todo.id %>" method="post"><button type="submit">Odstranit</button></form>
+    <form action="/toggle-todo/<%= todo.id %>?redirect=false" method="post">
+        <button type="submit"><%= todo.done ? 'Hotovo' : 'Nehotovo' %></button>
+    </form>
+    <h2>Upravit</h2>
+    <form action="/edit-todo/<%= todo.id %>" method="post">
+        <label for="title">Název</label>
+        <input type="text" name="title" id="title" value="<%= todo.title %>">
+        <br>
+        <label for="done">Dokončen</label>
+        <input id="done" type="checkbox" name="done" <%= todo.done ? "checked" : "" %>>
+        <br>
+        <button type="submit">Uložit</button>
+</body>
+</html>
