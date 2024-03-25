@@ -4,6 +4,7 @@
     <% for(const todo of todos) { %>
         <li>
             <a href="/todo/<%= todo.id %>"><%- todo.text %></a>
+            <p>Priorita <%= todo.priorityText %></p>
             <form action="/toggle-todo/<%= todo.id %>" method="post">
                 <button type="submit"><%= todo.done ? 'hotovo' : 'nehotovo' %></button>
             </form>
@@ -17,5 +18,13 @@
 <form method="post" action="/add-todo">
     <label for="text">Text tasku</label>
     <input type="text" name="text" id="text">
+    <br>
+    <label for="priority">Priorita</label>
+    <select name="priority" id="priority">
+        <option value="0">Nízká</option>
+        <option value="1">Střední</option>
+        <option value="2">Vysoká</option>
+    </select>
+    <br>
     <button type="submit">Pridat</button>
 </form>
