@@ -1,9 +1,9 @@
-<h1>Todo app</h1>
+<h1><%= title%></h1>
 
 <ul>
     <% for(const todo of todos) { %>
         <li>
-            <a href="/todo/<%= todo.id %>"><%- todo.title %></a>
+            <a href="/todo/<%= todo.id %>"><%- todo.text %></a>
             <form action="/toggle-todo/<%= todo.id %>" method="post">
                 <button type="submit"><%= todo.done ? 'hotovo' : 'nehotovo' %></button>
             </form>
@@ -16,6 +16,6 @@
 
 <form method="post" action="/add-todo">
     <label for="text">Text tasku</label>
-    <input type="text" name="title" id="text">
+    <input type="text" name="text" id="text">
     <button type="submit">Pridat</button>
 </form>
