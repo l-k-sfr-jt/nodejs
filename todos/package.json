@@ -2,19 +2,22 @@
   "name": "todos",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/app.js",
+    "test": "ava"
   },
   "author": "l-k-sfr-jt",
   "license": "ISC",
   "dependencies": {
+    "ava": "^5.3.0",
     "ejs": "^3.1.9",
     "express": "^4.18.3",
+    "express-session": "^1.18.0",
     "knex": "^3.1.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "supertest": "^6.3.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

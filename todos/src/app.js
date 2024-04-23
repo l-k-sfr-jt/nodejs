@@ -1,15 +1,20 @@
 import express from "express";
-import knex from 'knex'
-import knexfile from './knexfile.js'
+import { db, getAllTodos, getTodoById } from "./db.js"
+import session from 'express-session';
 
 const port = 3000;
 
-const app = express();
-const db = knex(knexfile);
+export const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
+
+app.use(session({
+    secret: 'osfaighbqe10349q7', // Change this to a random string
+    resave: false,
+    saveUninitialized: true
+}));
 
 
 function getPriorityName(priorityNumber) {
@@ -35,7 +40,7 @@ app.use((req, res, next) => {
 
 
 app.get("/", async (req, res) => {
-    const todos = await db().select('*').from('todos');
+    const todos = await getAllTodos();
     const todosWithPriorityNames = todos.map(todo => {
         return {
             id: todo.id,
@@ -44,14 +49,17 @@ app.get("/", async (req, res) => {
             priorityText: getPriorityName(todo.priority)
         };
     });
+    const errorMessage = req.session.errorMessage; // Get error message from session
+    req.session.errorMessage = null;
     res.render("index", {
         title: 'ToDos!',
-        todos: todosWithPriorityNames
+        todos: todosWithPriorityNames,
+        errorMessage
     });
 });
 
 app.get("/todo/:id", async (req, res, next) => {
-    const todo = await db('todos').select('*').where('id', req.params.id).first();
+    const todo = await getTodoById(req.params.id);
     if (!todo) return next();
 
     todo.priorityText = getPriorityName(todo.priority);
@@ -61,8 +69,12 @@ app.get("/todo/:id", async (req, res, next) => {
 });
 
 app.post("/add-todo", async (req, res) => {
-    const text = String(req.body.text);
-    const priority = Number(req.body.priority)
+    const text = req.body.text;
+    if(!text) {
+        req.session.errorMessage = "Text is required."; // Set error message in session
+        return res.redirect("/");
+    }
+    const priority = Number(req.body.priority);
     await db('todos').insert({ text, priority });
     res.redirect("/");
 });
@@ -77,7 +89,7 @@ app.post("/toggle-todo/:id", async (req, res, next) => {
 });
 
 app.post("/edit-todo/:id", async (req, res, next) => {
-    const todo = await db('todos').select('*').where('id', req.params.id).first();
+    const todo = await getTodoById(req.params.id);
 
     if (!todo) return next();
 
@@ -86,7 +98,7 @@ app.post("/edit-todo/:id", async (req, res, next) => {
 });
 
 app.post("/remove-todo/:id", async (req, res, next) => {
-    const todo = await db('todos').select('*').where('id', req.params.id).first();
+    const todo = await getTodoById(req.params.id);
 
     if (!todo) return next();
 
